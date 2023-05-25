@@ -14,4 +14,4 @@ Here I am using the white wire to enable boot
 ![2023-05-25 11 35 13](https://github.com/chris2172/Sonoff-TX-Ultimate-T5-Switch/assets/11930805/78573f3f-3220-4fc0-9eb2-6291fcb2f3ca)
 
 # Working with code
-Please make sure the 2 files touch_panel.hpp & touch_panel.cpp are in the ESPHome directory of home assistant so they upload with the yaml config
+Please make sure the 2 files touch_panel.hpp & touch_panel.cpp are in the config/esphome directory of home assistant so they upload with the yaml config
