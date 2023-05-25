@@ -34,13 +34,13 @@ light:
  Haptic Feedback GPIO21:
  
    - platform: gpio
-    pin: GPIO21
-    name: "Haptics"
-    id: "haptics"
-    restore_mode: ALWAYS_OFF
-    on_turn_on:
-      - delay: 400ms
-      - switch.turn_off: haptics
+     pin: GPIO21
+     name: "Haptics"
+     id: "haptics"
+     restore_mode: ALWAYS_OFF
+     on_turn_on:
+     - delay: 400ms
+     - switch.turn_off: haptics
       
       
  Left Relay: pin: GPIO18
