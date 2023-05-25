@@ -10,3 +10,5 @@ Who is the genius behind the code that I altered for my own needs.
 To enable boot mode to allow flashing connect the Ground Pin Hedder to the boot solder point highlited with the pink line
 ![2023-05-25 11 28 54](https://github.com/chris2172/Sonoff-TX-Ultimate-T5-Switch/assets/11930805/2c64072e-c4c6-4a53-9887-9af410d21c47)
 
+Here I am using the white wire to enable boot
+![2023-05-25 11 35 13](https://github.com/chris2172/Sonoff-TX-Ultimate-T5-Switch/assets/11930805/78573f3f-3220-4fc0-9eb2-6291fcb2f3ca)
