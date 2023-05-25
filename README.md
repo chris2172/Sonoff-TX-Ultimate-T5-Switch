@@ -44,7 +44,9 @@ light:
       
       
  Left Relay: pin: GPIO18
+ 
  Middle Relay: pin: GPIO17
+ 
  Right Relay: pin: GPIO27
  
  
