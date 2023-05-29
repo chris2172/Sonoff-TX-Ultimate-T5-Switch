@@ -9,8 +9,8 @@ substitutions:
   nightlight_red: 55%
   nightlight_green: 40%
   nightlight_blue: 55%
-  nightlight_on_hour: '20'  # turn on at 7 in the evening
-  nightlight_off_hour: '8'  # turn off at 9 in the morning
+  nightlight_on_hour: '20'  # turn on at 8 in the evening
+  nightlight_off_hour: '8'  # turn off at 8 in the morning
 
 
 
