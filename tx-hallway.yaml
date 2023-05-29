@@ -4,7 +4,15 @@
 substitutions:
   name: 'tx-hallway'
   brightness_on: 80%
-  brightness_nightlight: 0%
+  brightness_nightlight: 20%
+  nightlight_brightness: 20%
+  nightlight_red: 55%
+  nightlight_green: 40%
+  nightlight_blue: 55%
+  nightlight_on_hour: '20'  # turn on at 7 in the evening
+  nightlight_off_hour: '8'  # turn off at 9 in the morning
+
+
 
 esphome:
   name: $name
@@ -38,16 +46,6 @@ wifi:
     ssid: "Tx-Hallway"
     password: !secret wifi_password
 
-# Enable Bluetooth Proxy
-esp32_ble_tracker:
-    scan_parameters:
-      interval: 1100ms
-      window: 1100ms
-      active: true
-
-bluetooth_proxy:
-  active: true
-
 # Home Assistant Light State
 text_sensor:
   - platform: homeassistant
@@ -73,6 +71,10 @@ uart:
   rx_pin: 22
   baud_rate: 115200
 
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
 button:
   - platform: template
     name: light relays
@@ -92,13 +94,24 @@ button:
                 blue: 0%
                 transition_length: 500ms
           else:
-            - light.turn_on:
-                id: light_left_both
-                brightness: ${brightness_nightlight}
-                red: 0%
-                green: 0%
-                blue: 0%
-                transition_length: 2s
+            - if:
+                condition:
+                  and:
+                    - lambda: 'return id(homeassistant_time).now().hour < ${nightlight_on_hour};'
+                    - lambda: 'return id(homeassistant_time).now().hour  > ${nightlight_off_hour};'
+                then:
+                  - light.turn_off:
+                      id: light_left_both
+                      transition_length: 500ms
+                else:
+                  - light.turn_on:
+                      id: light_left_both
+                      brightness: ${nightlight_brightness}
+                      red: ${nightlight_red}
+                      green: ${nightlight_green}
+                      blue: ${nightlight_blue}
+                      transition_length: 500ms
+
       - if:
           condition:
               text_sensor.state:
@@ -113,13 +126,23 @@ button:
                 blue: 0%
                 transition_length: 2s
           else:
-            - light.turn_on:
-                id: light_middle_both
-                brightness: ${brightness_nightlight}
-                red: 0%
-                green: 0%
-                blue: 0%
-                transition_length: 2s
+            - if:
+                condition:
+                  and:
+                    - lambda: 'return id(homeassistant_time).now().hour < ${nightlight_on_hour};'
+                    - lambda: 'return id(homeassistant_time).now().hour  > ${nightlight_off_hour};'
+                then:
+                  - light.turn_off:
+                      id: light_middle_both
+                      transition_length: 500ms
+                else:
+                  - light.turn_on:
+                      id: light_middle_both
+                      brightness: ${nightlight_brightness}
+                      red: ${nightlight_red}
+                      green: ${nightlight_green}
+                      blue: ${nightlight_blue}
+                      transition_length: 500ms
       - if:
           condition:
             switch.is_on: relay3
@@ -132,13 +155,23 @@ button:
                 blue: 0%
                 transition_length: 2s
           else:
-            - light.turn_on:
-                id: light_right_both
-                brightness: ${brightness_nightlight}
-                red: 0%
-                green: 0%
-                blue: 0%
-                transition_length: 2s
+            - if:
+                condition:
+                  and:
+                    - lambda: 'return id(homeassistant_time).now().hour < ${nightlight_on_hour};'
+                    - lambda: 'return id(homeassistant_time).now().hour  > ${nightlight_off_hour};'
+                then:
+                  - light.turn_off:
+                      id: light_right_both
+                      transition_length: 500ms
+                else:
+                  - light.turn_on:
+                      id: light_right_both
+                      brightness: ${nightlight_brightness}
+                      red: ${nightlight_red}
+                      green: ${nightlight_green}
+                      blue: ${nightlight_blue}
+                      transition_length: 500ms
 
 binary_sensor:
   - platform: custom
@@ -162,6 +195,9 @@ binary_sensor:
               data:
                 entity_id: "light.hallway_light"
           - switch.turn_on: haptics
+          # Simple with lambda
+          - media_player.play_media: !lambda 'return "http://192.168.1.170:8123/local/doorbell-1.mp3";'
+
           - delay: 2s
           - button.press: light_relays
       - id: button_middle
@@ -263,6 +299,21 @@ light:
     num_leds: 28
     name: "Ambience Nightlight"
     id: rgb_light
+    on_turn_on:
+      - if:
+          condition:
+            and:
+              - lambda: 'return id(homeassistant_time).now().hour < ${nightlight_on_hour};'
+              - lambda: 'return id(homeassistant_time).now().hour  > ${nightlight_off_hour};'
+          then:
+            - light.turn_on:
+                id: rgb_light
+                brightness: ${nightlight_brightness}
+                red: ${nightlight_red}
+                green: ${nightlight_green}
+                blue: ${nightlight_blue}
+                transition_length: 500ms
+
     effects:
       - addressable_rainbow:
           name: 'rainbow fast'
@@ -349,3 +400,16 @@ light:
       - id: rgb_light
         from: 13
         to: 19
+
+# I2S audio component
+i2s_audio:
+  i2s_bclk_pin: GPIO2   # BCK
+  i2s_lrclk_pin: GPIO4  # WS
+
+# Player component for I2S
+media_player:
+  - platform: i2s_audio
+    name: Speaker
+    dac_type: external
+    mode: mono
+    i2s_dout_pin: GPIO15
