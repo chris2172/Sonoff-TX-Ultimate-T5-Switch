@@ -16,16 +16,6 @@ Here I am using the white wire to enable boot and only connect it till the scree
 # Working with code
 Please make sure the 2 files touch_panel.hpp & touch_panel.cpp are in the config/esphome directory of home assistant so they upload with the yaml config
 
-Each led is addresable individualy or as a group id 0 to 27
-light:
-
-platform: neopixelbus
-
-type: GRB
-
-variant: WS2812
-
-pin: GPIO13
         
  Haptic Feedback GPIO21:
       
